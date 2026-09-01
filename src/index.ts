@@ -1,8 +1,17 @@
 export { NextDevKit } from "./ui/NextDevKit";
 export { NavigationTreeView } from "./ui/NavigationTree";
-export { parseSnapshot, parseReactTree, parseErrors, parseBrowserLogs } from "./parse";
-export { captureLiveSnapshot, highlightRef, SAMPLE_SNAPSHOT, SAMPLE_TREE } from "./live";
-export { pullFromBridge, fetchBridge } from "./bridge";
+export { InspectorPane } from "./ui/Inspector";
+export {
+  parseSnapshot,
+  parseReactTree,
+  parseTreeDetail,
+  parseErrors,
+  parseBrowserLogs,
+  componentIdFromNode,
+} from "./parse";
+export { captureLiveSnapshot, highlightRef, SAMPLE_SNAPSHOT, SAMPLE_TREE, SAMPLE_TREE_DETAIL } from "./live";
+export { pullFromBridge, fetchBridge, inspectComponent } from "./bridge";
+export { mountDevKit, unmountDevKit } from "./mount";
 export type {
   NextDevKitProps,
   DevKitPayload,
@@ -10,4 +19,5 @@ export type {
   DevLogEntry,
   DevErrorEntry,
   DevKitTab,
+  ComponentInspect,
 } from "./types";

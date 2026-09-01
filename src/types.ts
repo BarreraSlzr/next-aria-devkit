@@ -1,7 +1,5 @@
 export type DevKitTab = "snapshot" | "tree" | "errors" | "logs";
-
 export type LogLevel = "log" | "info" | "warn" | "error" | "debug";
-
 export type TreeKind =
   | "generic"
   | "role"
@@ -49,22 +47,24 @@ export interface DevKitPayload {
   logs: DevLogEntry[];
 }
 
+export interface ComponentInspect {
+  id: string;
+  name: string;
+  path?: string;
+  source?: string;
+  props: Record<string, string>;
+  hooks: Array<{ name: string; value: string }>;
+  raw: string;
+}
+
 export interface NextDevKitProps {
-  /** Force-enable even outside development. Default: only NODE_ENV=development. */
   enabled?: boolean;
-  /** Starting tab. */
   defaultTab?: DevKitTab;
-  /** Keyboard shortcut. Default Alt+Shift+D. Set false to disable. */
   shortcut?: { alt?: boolean; shift?: boolean; meta?: boolean; key: string } | false;
-  /** Optional next-browser HTTP bridge, e.g. \"/api/next-devkit\". */
   bridgeUrl?: string;
-  /** Seed data (useful for demos / pasted CLI output). */
   initialPayload?: Partial<DevKitPayload>;
-  /** Called when a snapshot ref is selected. */
   onSelectRef?: (ref: string, node: DevTreeNode) => void;
-  /** Panel side. */
   placement?: "right" | "left";
-  /** Extra class on the host root. */
   className?: string;
 }
 
