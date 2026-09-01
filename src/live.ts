@@ -57,7 +57,7 @@ export function captureLiveSnapshot(root: ParentNode = document.body, ignoreSele
       const kids = walk(child);
       nodes.push({
         id: `live-${role}-${idRef ?? nodes.length}-${name.slice(0, 12)}`,
-        title: name ? `${role} \u201c${name}\u201d` : role,
+        title: name ? `${role} "${name}"` : role,
         kind: role === "link" || role === "button" || role === "heading" ? role : "role",
         ref: idRef,
         meta: idRef ? `#${idRef}` : undefined,
@@ -157,3 +157,13 @@ export const SAMPLE_TREE = `0 1 - Root
 6 7 6 Heading
 7 8 6 SettingsForm
 8 9 8 TokenField`;
+
+export const SAMPLE_TREE_DETAIL = `path: Root > HeadManagerContext.Provider > AppRouter > Layout > Page > SettingsForm
+SettingsForm #8
+props:
+  title: "Settings"
+  children: [<TokenField />, <Button />]
+hooks:
+  FormState: { dirty: false } (1 sub)
+  Router: undefined (2 sub)
+source: app/settings/form.tsx:24:8`;
