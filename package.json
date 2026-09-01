@@ -1,6 +1,6 @@
 {
   "name": "next-aria-devkit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Drop-in Next.js dev FAB that visualizes next-browser snapshot / React tree / errors / browser-logs with React Aria NavigationTree.",
   "license": "MIT",
   "author": "InternetFriends.xyz",
@@ -25,7 +25,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./styles.css": "./src/styles.css",
-    "./route": "./src/route.ts"
+    "./route": "./src/route.ts",
+    "./plugin": "./src/plugin.ts",
+    "./inject": "./src/inject.ts"
   },
   "files": [
     "src",
