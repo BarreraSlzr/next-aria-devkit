@@ -1,1 +1,1 @@
-import "next-aria-devkit/inject";
+import "@internetfriends/next-aria-devkit/inject";

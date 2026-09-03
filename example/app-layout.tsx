@@ -1,5 +1,5 @@
-import { NextDevKit } from "next-aria-devkit";
-import "next-aria-devkit/styles.css";
+import { NextDevKit } from "@internetfriends/next-aria-devkit";
+import "@internetfriends/next-aria-devkit/styles.css";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

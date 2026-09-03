@@ -1,58 +1,51 @@
-# next-aria-devkit
+# @internetfriends/next-aria-devkit
 
-Drop-in Next.js development FAB that visualizes Vercel `next-browser` output — snapshot, React tree, `tree <id>` inspector, errors, and browser-logs — with React Aria hierarchical navigation.
+Drop-in Next.js dev FAB for Vercel `next-browser` — snapshot, React tree, `tree <id>` inspector, errors, browser-logs — plus a live **daemon status chip**.
 
 ## Install
+
+Until npm publish (needs an `@internetfriends` org token):
 
 ```bash
 pnpm add -D github:BarreraSlzr/next-aria-devkit react-aria-components
 ```
 
-## Fastest path: next.config plugin (no layout import)
+After publish:
 
-Next.js 16.3+ injects client instrumentation:
-
-```ts
-import { withNextAriaDevkit } from "next-aria-devkit/plugin";
-
-export default withNextAriaDevkit(
-  { /* existing config */ },
-  { bridgeUrl: "/api/next-devkit" },
-);
+```bash
+pnpm add -D @internetfriends/next-aria-devkit react-aria-components
 ```
 
-The wrapper adds `transpilePackages`, sets `NEXT_PUBLIC_NADK_BRIDGE_URL`, and appends `next-aria-devkit/inject` to `instrumentationClientInject`.
-
-Next.js < 16.3: keep the plugin, plus one line:
+## Plug in (no layout import on Next 16.3+)
 
 ```ts
-// instrumentation-client.ts
-import "next-aria-devkit/inject";
+import { withNextAriaDevkit } from "@internetfriends/next-aria-devkit/plugin";
+
+export default withNextAriaDevkit({}, { bridgeUrl: "/api/next-devkit" });
 ```
-
-Or drop `<NextDevKit />` in `app/layout.tsx`.
-
-`Alt+Shift+D` toggles the panel. Snapshot nodes highlight `[ref=eN]`. Tree nodes inspect `tree <id>` (props, hooks, source).
-
-## Bridge
 
 ```ts
 // app/api/next-devkit/route.ts
-export { POST } from "next-aria-devkit/route";
+export { GET, POST } from "@internetfriends/next-aria-devkit/route";
 ```
+
+Next < 16.3: also add `import "@internetfriends/next-aria-devkit/inject"` in `instrumentation-client.ts`.
+
+`GET /api/next-devkit` probes `next-browser --version` then `snapshot`:
+- **daemon live** — CLI + session up
+- **daemon down** — CLI installed, run `next-browser open http://localhost:3000`
+- **no CLI** — install `@vercel/next-browser`
+- **no bridge** — route not mounted
+
+`Alt+Shift+D` toggles the panel. Tree clicks run `tree <id>`.
+
+## Publish
 
 ```bash
-pnpm add -g @vercel/next-browser
-playwright install chromium
-next-browser open http://localhost:3000
+npm login
+npm publish --access public
 ```
 
-## Exports
-
-- `next-aria-devkit` — UI, parsers, mount
-- `next-aria-devkit/plugin` — `withNextAriaDevkit()`
-- `next-aria-devkit/inject` — auto-mount bootstrap
-- `next-aria-devkit/styles.css`
-- `next-aria-devkit/route` — dev-only POST handler
+Requires membership on the `internetfriends` npm org (or change `name` in package.json).
 
 MIT

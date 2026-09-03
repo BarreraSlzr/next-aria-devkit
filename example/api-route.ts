@@ -1,1 +1,1 @@
-export { POST } from "next-aria-devkit/route";
+export { GET, POST } from "@internetfriends/next-aria-devkit/route";
