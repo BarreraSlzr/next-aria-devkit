@@ -1,15 +1,16 @@
 export type DevKitTab = "snapshot" | "tree" | "errors" | "logs";
 export type LogLevel = "log" | "info" | "warn" | "error" | "debug";
-export type TreeKind =
-  | "generic"
-  | "role"
-  | "link"
-  | "button"
-  | "heading"
-  | "component"
-  | "section"
-  | "error"
-  | "log";
+export type TreeKind = "generic" | "role" | "link" | "button" | "heading" | "component" | "section" | "error" | "log";
+export type DaemonState = "unknown" | "missing-bridge" | "no-cli" | "daemon-down" | "live";
+
+export interface DaemonStatus {
+  ok: boolean;
+  state: DaemonState;
+  cliInstalled?: boolean;
+  daemon?: boolean;
+  version?: string | null;
+  hint?: string | null;
+}
 
 export interface DevTreeNode {
   id: string;
