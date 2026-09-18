@@ -1,6 +1,6 @@
 const ALLOWED = new Set(["snapshot", "tree", "errors", "logs", "browser-logs", "network"]);
 
-function run(args: string[], timeout = 8000) {
+function run(args, timeout = 8000) {
   return import("node:child_process").then(
     ({ execFile }) =>
       new Promise((resolve) => {
@@ -20,9 +20,14 @@ export async function GET() {
   if (process.env.NODE_ENV !== "development") {
     return Response.json({ ok: false, error: "Disabled outside development" }, { status: 403 });
   }
+
+  const { fmStatus } = await import("./fm");
+  const fm = await fmStatus();
+
   const version = await run(["--version"], 4000);
   const cliInstalled = version.ok || Boolean(version.stdout.trim());
   const cliVersion = (version.stdout || version.stderr).trim().split("\n")[0] || null;
+
   if (!cliInstalled) {
     return Response.json({
       ok: false,
@@ -31,18 +36,25 @@ export async function GET() {
       daemon: false,
       version: null,
       hint: "pnpm add -g @vercel/next-browser && playwright install chromium",
+      nextBrowser: { state: "no-cli", daemon: false, version: null },
+      fm,
     });
   }
+
   const probe = await run(["snapshot"], 6000);
   const combined = `${probe.stderr}\n${probe.stdout}`;
   const daemon = probe.ok && !/not running|no browser|could not connect/i.test(combined);
+  const state = daemon ? "live" : "daemon-down";
+
   return Response.json({
     ok: daemon,
-    state: daemon ? "live" : "daemon-down",
+    state,
     cliInstalled: true,
     daemon,
     version: cliVersion,
     hint: daemon ? null : "Run `next-browser open http://localhost:3000`",
+    nextBrowser: { state, daemon, version: cliVersion },
+    fm,
   });
 }
 
@@ -50,8 +62,42 @@ export async function POST(request) {
   if (process.env.NODE_ENV !== "development") {
     return Response.json({ ok: false, error: "Disabled outside development" }, { status: 403 });
   }
+
   const body = await request.json().catch(() => null);
-  const command = (body?.command ?? "snapshot").trim();
+  const command = String(body?.command ?? "snapshot").trim();
+
+  if (command === "fm-chat") {
+    const { fmChat, fmStatus } = await import("./fm");
+    const status = await fmStatus();
+    if (!status.ok) return Response.json({ ok: false, command, output: "", error: status.hint }, { status: 503 });
+    try {
+      const output = await fmChat(body.messages ?? []);
+      return Response.json({ ok: true, command, output });
+    } catch (error) {
+      return Response.json({
+        ok: false,
+        command,
+        output: "",
+        error: error instanceof Error ? error.message : String(error),
+      }, { status: 500 });
+    }
+  }
+
+  if (command === "vector") {
+    const { evaluateVector } = await import("./jev");
+    try {
+      const output = await evaluateVector(body.context);
+      return Response.json({ ok: true, command, output: JSON.stringify(output) });
+    } catch (error) {
+      return Response.json({
+        ok: false,
+        command,
+        output: "",
+        error: error instanceof Error ? error.message : String(error),
+      }, { status: 500 });
+    }
+  }
+
   const args = command.split(/\s+/).filter(Boolean);
   const bin = args[0] ?? "";
   if (!ALLOWED.has(bin)) {
