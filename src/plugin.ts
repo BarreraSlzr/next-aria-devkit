@@ -8,6 +8,7 @@ export interface NextAriaDevkitPluginOptions {
   bridgeUrl?: string;
   inject?: boolean;
   packageName?: string;
+  fmBaseUrl?: string;
 }
 
 const PKG_ALIASES = ["next-aria-devkit", "@internetfriends/next-aria-devkit"];
@@ -32,6 +33,7 @@ export function withNextAriaDevkit<T extends NextConfigLike>(
     env: {
       ...(nextConfig.env ?? {}),
       NEXT_PUBLIC_NADK_BRIDGE_URL: options.bridgeUrl ?? nextConfig.env?.NEXT_PUBLIC_NADK_BRIDGE_URL ?? "",
+      NADK_FM_BASE_URL: options.fmBaseUrl ?? nextConfig.env?.NADK_FM_BASE_URL ?? "http://127.0.0.1:1976",
     },
     ...(inject
       ? { instrumentationClientInject: unique([...existingInject, `${pkg}/inject`]) }
