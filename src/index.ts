@@ -13,6 +13,8 @@ export {
 export { captureLiveSnapshot, highlightRef, SAMPLE_SNAPSHOT, SAMPLE_TREE, SAMPLE_TREE_DETAIL } from "./live";
 export { pullFromBridge, fetchBridge, inspectComponent, fetchDaemonStatus } from "./bridge";
 export { mountDevKit, unmountDevKit } from "./mount";
+export { fmChat, fmStatus, FM_BASE, FM_BIN } from "./fm";
+export { evaluateVector } from "./jev";
 export type {
   NextDevKitProps,
   DevKitPayload,
@@ -23,4 +25,7 @@ export type {
   ComponentInspect,
   DaemonStatus,
   DaemonState,
+  InspectionContext,
+  FmStatus,
+  DevVector,
 } from "./types";

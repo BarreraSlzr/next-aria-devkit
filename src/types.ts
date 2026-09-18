@@ -1,7 +1,34 @@
-export type DevKitTab = "snapshot" | "tree" | "errors" | "logs";
+export type DevKitTab = "snapshot" | "tree" | "errors" | "logs" | "fm" | "vector";
 export type LogLevel = "log" | "info" | "warn" | "error" | "debug";
 export type TreeKind = "generic" | "role" | "link" | "button" | "heading" | "component" | "section" | "error" | "log";
 export type DaemonState = "unknown" | "missing-bridge" | "no-cli" | "daemon-down" | "live";
+
+export interface InspectionContext {
+  kit: "next-aria-devkit@0.4";
+  route?: string;
+  capturedAt: string;
+  selection?: { kind: "snapshot-ref" | "component" | "error" | "log"; id: string };
+  snapshot?: string;
+  tree?: string;
+  errors?: string;
+  browserLogs?: string;
+}
+
+export interface FmStatus {
+  ok: boolean;
+  platform: NodeJS.Platform | string;
+  endpoint: string;
+  hint?: string | null;
+}
+
+export interface DevVector {
+  source: "jev" | "fm-schema" | "unavailable";
+  area: "performance" | "ux" | "ui" | "a11y" | "data" | "infra" | "unknown";
+  severity: number;
+  action: "measure" | "fix-now" | "defer" | "ask-user" | "unknown";
+  worthFixing: number;
+  direction: string;
+}
 
 export interface DaemonStatus {
   ok: boolean;
@@ -10,6 +37,12 @@ export interface DaemonStatus {
   daemon?: boolean;
   version?: string | null;
   hint?: string | null;
+  nextBrowser?: {
+    state: DaemonState;
+    daemon?: boolean;
+    version?: string | null;
+  };
+  fm?: FmStatus;
 }
 
 export interface DevTreeNode {
